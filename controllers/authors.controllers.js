@@ -38,11 +38,12 @@ let authors = [
 
 ];
 
-function obtenerAuthors(req,res){
+
+function getAuthors(req,res){
     res.status(200).json(authors);
 }
 
-function obtenerAuthor(req,res){
+function getAuthor(req,res){
     const id = Number(req.params.id);
     if(!Number.isInteger(id) || id <= 0){
         return res.status(400).json({error: "El id es incorrecto"});
@@ -52,6 +53,17 @@ function obtenerAuthor(req,res){
         return res.status(404).json({error: "El author no existe"});
     }
     res.status(200).json(author);
+}
+
+function createUserAuthor(req,res){
+    const newUser = {
+        id: authors.length + 1,
+        name: req.body.name,
+        email: req.body.email,
+        bio: req.body.bio
+    };
+    authors.push(newUser);
+    res.status(201).json(newUser);
 }
 
 
@@ -66,6 +78,8 @@ function obtenerAuthor(req,res){
 
 
 module.exports = {
-    obtenerAuthors,
-    obtenerAuthor
+    getAuthors,
+    getAuthor,
+    createUserAuthor,
+    authors
 }

@@ -2,23 +2,18 @@ const express = require("express");
 const routerAuthors = express.Router();
 
 const {
-    obtenerAuthors,
-    obtenerAuthor
-
+    getAuthors,
+    getAuthor,
+    createUserAuthor
 } = require("../controllers/authors.controllers.js");
 
-routerAuthors.get("/", obtenerAuthors);
+const { validateUserAuthor } = require("../middlewares/authors.middleware.js");
 
-routerAuthors.get("/:id", obtenerAuthor);
+routerAuthors.get("/", getAuthors);
 
+routerAuthors.get("/:id", getAuthor);
 
-
-
-
-
-
-
-
+routerAuthors.post("/", validateUserAuthor, createUserAuthor);
 
 
 module.exports = routerAuthors;
