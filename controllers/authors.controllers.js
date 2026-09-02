@@ -53,7 +53,7 @@ function getAuthor(req,res){
         return res.status(404).json({error: "El author no existe"});
     }
     res.status(200).json(author);
-}
+};
 
 function createUserAuthor(req,res){
     const newUser = {
@@ -64,22 +64,23 @@ function createUserAuthor(req,res){
     };
     authors.push(newUser);
     res.status(201).json(newUser);
-}
+};
 
+function updateUserAuthor(req, res){
+    const id = Number(req.params.id);
+    const author = authors.find(author => author.id === id);
+    author.name = req.body.name;
+    author.email = req.body.email;
+    author.bio = req.body.bio;
 
-
-
-
-
-
-
-
-
+    res.status(200).json(author);
+};
 
 
 module.exports = {
     getAuthors,
     getAuthor,
     createUserAuthor,
+    updateUserAuthor,
     authors
 }
