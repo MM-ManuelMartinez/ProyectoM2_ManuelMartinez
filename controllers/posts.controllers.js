@@ -39,8 +39,16 @@ const posts = [
 
 function getPosts(req,res){
     res.status(200).json(posts);
+};
+
+function getPost(req,res){
+    const id = Number(req.params.id);
+    const postSearched = posts.find(post => post.id === id);
+    res.status(200).json(postSearched);
 }
 
 module.exports = {
-    getPosts
+    getPosts,
+    getPost,
+    posts
 };
