@@ -59,10 +59,29 @@ function validateUserUpdate(req, res, next){
     next()
 }
 
+function validateUserDelete(req, res, next){
+    const id = Number(req.params.id);
+    if(!id){
+        return res.status(400).json({
+            error: "El id es incorrecto"}
+        );
+    } else if(!Number.isInteger(id) || id < 0){
+        return res.status(400).json({
+            error: "El id debe ser un numero entero y positivo"
+        })
+    } else if(!authors.some(author=> author.id === id)){
+         return res.status(404).json({
+            error: "El author no existe"
+        })
+    }; 
+    next();
+}
+
 
 
 
 module.exports = {
     validateUserAuthor,
-    validateUserUpdate
+    validateUserUpdate,
+    validateUserDelete
 }

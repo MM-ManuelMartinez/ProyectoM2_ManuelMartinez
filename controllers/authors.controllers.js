@@ -76,11 +76,20 @@ function updateUserAuthor(req, res){
     res.status(200).json(author);
 };
 
+function deleteUserAuthor(req,res){
+    const id = Number(req.params.id);
+    const userIndex = authors.findIndex(author => author.id === id);
+    const userName = authors[userIndex].name;
+    authors.splice(userIndex,1);
+    res.status(204).send();
+};
+
 
 module.exports = {
     getAuthors,
     getAuthor,
     createUserAuthor,
     updateUserAuthor,
+    deleteUserAuthor,
     authors
 }
