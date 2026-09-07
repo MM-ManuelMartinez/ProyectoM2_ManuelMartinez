@@ -45,10 +45,17 @@ function getPost(req,res){
     const id = Number(req.params.id);
     const postSearched = posts.find(post => post.id === id);
     res.status(200).json(postSearched);
-}
+};
+
+function getAuthorPosts(req,res){
+    const id = Number(req.params.authorId);
+    const postsSearched = posts.filter(post => post.author_id === id);
+    res.status(200).json(postsSearched);
+};
 
 module.exports = {
     getPosts,
     getPost,
+    getAuthorPosts,
     posts
 };

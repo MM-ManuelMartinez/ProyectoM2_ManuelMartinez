@@ -4,16 +4,20 @@ const postsRouter = express.Router();
 
 const {
     getPosts,
-    getPost
+    getPost,
+    getAuthorPosts
 } = require("../controllers/posts.controllers.js");
 
 const {
-    validatePost
+    validatePost,
+    validateAuthorPosts
 } = require("../middlewares/posts.middleware.js");
 
 postsRouter.get("/", getPosts);
 
 postsRouter.get("/:id", validatePost, getPost);
+
+postsRouter.get("/author/:authorId", validateAuthorPosts, getAuthorPosts);
 
 
 module.exports = postsRouter;
