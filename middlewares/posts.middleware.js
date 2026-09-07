@@ -68,8 +68,53 @@ function validateNewPost(req,res,next){
     next();
 };
 
+function validateUpdatePost(req, res, next) {
+    const id = Number(req.params.id);
+    const { title, content, author_id, published } = req.body;
+    const authorId = Number(author_id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+             error: "El id es incorrecto" 
+            });
+
+    } else if (!posts.some(post => post.id === id)) {
+        return res.status(404).json({
+             error: "El post no existe" 
+            });
+
+    } else if (!title || title.trim() === "") {
+        return res.status(400).json({
+             error: "El titulo es obligatorio" 
+            });
+
+    } else if (!content || content.trim() === "") {
+        return res.status(400).json({
+             error: "El contenido es obligatorio" 
+            });
+
+    } else if (!Number.isInteger(authorId) || authorId <= 0) {
+        return res.status(400).json({
+             error: "El author_id es incorrecto"
+            });
+
+    } else if (!authors.some(author => author.id === authorId)) {
+        return res.status(404).json({ 
+            error: "El author no existe" 
+        });
+
+    } else if (typeof published !== "boolean") {
+        return res.status(400).json({
+             error: "published debe ser booleano" 
+        });
+    }
+
+    next();
+}
+
 module.exports = {
     validatePost,
     validateAuthorPosts,
-    validateNewPost
-}
+    validateNewPost,
+    validateUpdatePost
+};

@@ -65,10 +65,32 @@ function newPost(req,res){
     res.status(201).json(post)
 };
 
+function updatePost(req,res){
+    const id = Number(req.params.id);
+    const postSearched = posts.find(post => post.id === id);
+    postSearched.title = req.body.title;
+    postSearched.content = req.body.content;
+    postSearched.author_id = req.body.author_id;
+    postSearched.published = req.body.published;
+
+    res.status(200).json(postSearched);
+};
+
+function deletePost(req, res) {
+    const id = Number(req.params.id);
+    const postIndex = posts.findIndex(post => post.id === id);
+
+    posts.splice(postIndex, 1);
+
+    res.status(204).send();
+}
+
 module.exports = {
     getPosts,
     getPost,
     getAuthorPosts,
     newPost,
+    updatePost,
+    deletePost,
     posts
 };
