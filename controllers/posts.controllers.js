@@ -53,9 +53,22 @@ function getAuthorPosts(req,res){
     res.status(200).json(postsSearched);
 };
 
+function newPost(req,res){
+    const post = {
+        id: posts.length + 1,
+        title: req.body.title,
+        content : req.body.content,
+        author_id: req.body.author_id,
+        published: req.body.published
+    };
+    posts.push(post);
+    res.status(201).json(post)
+};
+
 module.exports = {
     getPosts,
     getPost,
     getAuthorPosts,
+    newPost,
     posts
 };
