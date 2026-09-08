@@ -10,6 +10,7 @@ const {
 } = require("../controllers/authors.controllers.js");
 
 const { 
+    validateAuthorId,
     validateUserAuthor,
     validateUserUpdate,
     validateUserDelete
@@ -17,7 +18,7 @@ const {
 
 routerAuthors.get("/", getAuthors);
 
-routerAuthors.get("/:id", getAuthor);
+routerAuthors.get("/:id", validateAuthorId, getAuthor);
 
 routerAuthors.post("/", validateUserAuthor, createUserAuthor);
 

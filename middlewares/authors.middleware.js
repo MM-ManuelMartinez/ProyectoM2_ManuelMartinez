@@ -1,5 +1,13 @@
 const { authors } = require("../controllers/authors.controllers.js");
 
+function validateAuthorId(req,res,next){
+    const id = Number(req.params.id);
+    if(!Number.isInteger(id) || id <= 0){
+        return res.status(400).json({error: "El id es incorrecto"});
+    };
+    next();
+}
+
 function validateUserAuthor(req, res, next){
     const {name, email, bio} = req.body;
     if(!name || name.trim() === "" ){
@@ -83,5 +91,6 @@ function validateUserDelete(req, res, next){
 module.exports = {
     validateUserAuthor,
     validateUserUpdate,
-    validateUserDelete
+    validateUserDelete,
+    validateAuthorId
 }
