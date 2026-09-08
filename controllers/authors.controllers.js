@@ -21,7 +21,10 @@ let authors = [
 
 const {
     getAllAuthors,
-    getAuthorById
+    getAuthorById,
+    createAuthor,
+    updateAuthor,
+    deleteAuthor
 } = require("../services/authors.service.js");
 
 async function getAuthors(req,res){
@@ -38,32 +41,27 @@ async function getAuthor(req,res){
     res.status(200).json(result[0]);
 };
 
-function createUserAuthor(req,res){
-    const newUser = {
-        id: authors.length + 1,
-        name: req.body.name,
-        email: req.body.email,
-        bio: req.body.bio
-    };
-    authors.push(newUser);
-    res.status(201).json(newUser);
+async function createUserAuthor(req,res){
+    const name = req.body.name;
+    const email = req.body.email;
+    const bio = req.body.bio;
+    const result = await createAuthor(name, email, bio);
+    res.status(201).json(result); 
 };
 
-function updateUserAuthor(req, res){
+async function updateUserAuthor(req, res){
     const id = Number(req.params.id);
-    const author = authors.find(author => author.id === id);
-    author.name = req.body.name;
-    author.email = req.body.email;
-    author.bio = req.body.bio;
+    const name = req.body.name;
+    const email = req.body.email;
+    const bio = req.body.bio;
 
-    res.status(200).json(author);
+    const result = await updateAuthor(name, email, bio, id);
+    res.status(200).json(result);
 };
 
-function deleteUserAuthor(req,res){
+async function deleteUserAuthor(req,res){
     const id = Number(req.params.id);
-    const userIndex = authors.findIndex(author => author.id === id);
-    const userName = authors[userIndex].name;
-    authors.splice(userIndex,1);
+    const result = await deleteAuthor(id);
     res.status(204).send();
 };
 

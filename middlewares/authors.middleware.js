@@ -1,5 +1,7 @@
 const { authors } = require("../controllers/authors.controllers.js");
 
+const { findAuthorByEmail, getAuthorById } = require("../services/authors.service.js");
+
 function validateAuthorId(req,res,next){
     const id = Number(req.params.id);
     if(!Number.isInteger(id) || id <= 0){
@@ -8,7 +10,7 @@ function validateAuthorId(req,res,next){
     next();
 }
 
-function validateUserAuthor(req, res, next){
+async function validateUserAuthor(req, res, next){
     const {name, email, bio} = req.body;
     if(!name || name.trim() === "" ){
         return res.status(400).json({
@@ -18,16 +20,21 @@ function validateUserAuthor(req, res, next){
         return res.status(400).json({
             error: "El email es obligatorio"
         });
-    } else if(authors.some(author => author.email === email)){
+    } 
+    
+    const validateEmail = await findAuthorByEmail(email);
+    
+    if(validateEmail.length !== 0 ){
         return res.status(400).json({
             error: "El email ya existe"
         });
     };
+
     next();
 };
 
 
-function validateUserUpdate(req, res, next){
+async function validateUserUpdate(req, res, next){
     const id = Number(req.params.id);
     const { name, email, bio } = req.body;
 
@@ -39,10 +46,11 @@ function validateUserUpdate(req, res, next){
         return res.status(400).json({
             error: "El id debe ser un numero entero y positivo"
         })
-    } else if(!authors.some(author=> author.id === id)){
-         return res.status(404).json({
-            error: "El author no existe"
-        })
+    } 
+    
+    const validateAuthor = await getAuthorById(id);
+    if(validateAuthor.length === 0){
+        return res.status(404).json({error: "El author no existe"});
     };
 
 
@@ -54,20 +62,19 @@ function validateUserUpdate(req, res, next){
         return res.status(400).json({
             error: "El email es obligatorio"
         });
-    }
+    };
     
-    const validateEmail = authors.some(author=> author.id !== id && author.email === email);
-    
-    if(validateEmail){
+    const validateEmail = await findAuthorByEmail(email);
+    if(validateEmail.length !== 0 && validateEmail[0].id !== id){
         return res.status(400).json({
             error: "El email ya existe"
         });
     };
 
-    next()
-}
+    next();
+};
 
-function validateUserDelete(req, res, next){
+async function validateUserDelete(req, res, next){
     const id = Number(req.params.id);
     if(!id){
         return res.status(400).json({
@@ -77,13 +84,13 @@ function validateUserDelete(req, res, next){
         return res.status(400).json({
             error: "El id debe ser un numero entero y positivo"
         })
-    } else if(!authors.some(author=> author.id === id)){
-         return res.status(404).json({
-            error: "El author no existe"
-        })
+    }
+    const validateAuthor = await getAuthorById(id);
+    if(validateAuthor.length === 0){
+        return res.status(404).json({error: "El author no existe"});
     }; 
     next();
-}
+};
 
 
 
