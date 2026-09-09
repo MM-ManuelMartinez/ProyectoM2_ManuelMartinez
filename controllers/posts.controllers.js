@@ -36,54 +36,50 @@ const posts = [
     }
 ];
 
+const { 
+    getAllPosts,
+    getPostById,
+    getPostsByAuthor,
+    createPost,
+    updatePostById,
+    deleteById
+} = require("../services/posts.service.js");
 
-function getPosts(req,res){
-    res.status(200).json(posts);
+async function getPosts(req,res){
+    const result = await getAllPosts();
+    res.status(200).json(result);
 };
 
-function getPost(req,res){
+async function getPost(req,res){
     const id = Number(req.params.id);
-    const postSearched = posts.find(post => post.id === id);
-    res.status(200).json(postSearched);
+    const result = await getPostById(id);
+    res.status(200).json(result[0]);
 };
 
-function getAuthorPosts(req,res){
+async function getAuthorPosts(req,res){
     const id = Number(req.params.authorId);
-    const postsSearched = posts.filter(post => post.author_id === id);
-    res.status(200).json(postsSearched);
+    const result = await getPostsByAuthor(id);
+    res.status(200).json(result);
 };
 
-function newPost(req,res){
-    const post = {
-        id: posts.length + 1,
-        title: req.body.title,
-        content : req.body.content,
-        author_id: req.body.author_id,
-        published: req.body.published
-    };
-    posts.push(post);
-    res.status(201).json(post)
+async function newPost(req,res){
+    const { title, content, author_id, published } = req.body;
+    const result = await createPost(title, content, author_id, published);
+    res.status(201).json(result);
 };
 
-function updatePost(req,res){
+async function updatePost(req,res){
+    const { title, content, author_id, published } = req.body;
     const id = Number(req.params.id);
-    const postSearched = posts.find(post => post.id === id);
-    postSearched.title = req.body.title;
-    postSearched.content = req.body.content;
-    postSearched.author_id = req.body.author_id;
-    postSearched.published = req.body.published;
-
-    res.status(200).json(postSearched);
+    const result = await updatePostById(title, content, author_id, published, id);
+    res.status(200).json(result);
 };
 
-function deletePost(req, res) {
+async function deletePost(req, res) {
     const id = Number(req.params.id);
-    const postIndex = posts.findIndex(post => post.id === id);
-
-    posts.splice(postIndex, 1);
-
+    const result = await deleteById(id);
     res.status(204).send();
-}
+};
 
 module.exports = {
     getPosts,

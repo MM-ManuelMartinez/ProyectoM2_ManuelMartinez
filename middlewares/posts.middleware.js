@@ -1,7 +1,9 @@
-const {posts} = require("../controllers/posts.controllers.js");
-const {authors} = require("../controllers/authors.controllers.js")
+const { posts } = require("../controllers/posts.controllers.js");
+const { authors } = require("../controllers/authors.controllers.js");
+const { getPostById } = require("../services/posts.service.js");
+const { getAuthorById } = require("../services/authors.service.js")
 
-function validatePost(req,res,next){
+async function validatePost(req,res,next){
     const id = Number(req.params.id);
     if(!id || !Number.isInteger(id) || id < 0){
         return res.status(400).json({
@@ -9,34 +11,36 @@ function validatePost(req,res,next){
         );
     };
 
-    const postSearched = posts.find(post => post.id === id);
-    if(!postSearched){
+    const result = await getPostById(id);
+    if(result.length === 0){
         return res.status(404).json({
             error: "El post no existe"
         });
-    };
+    }
+
     next();
 };
 
-function validateAuthorPosts(req,res,next){
+async function validateAuthorPosts(req,res,next){
     const id = Number(req.params.authorId);
     if(!id || !Number.isInteger(id) || id < 0){
         return res.status(400).json({
             error: "El id es incorrecto"}
         );
-    } else if(!authors.some(author=> author.id === id)){
+    } 
+    
+    const validateAuthor = await getAuthorById(id);
+    if(validateAuthor.length === 0){
         return res.status(404).json({
             error: "El author no existe"
         })
     };
     
     next();
-
 };
 
-function validateNewPost(req,res,next){
-    const title = req.body.title;
-    const content = req.body.content;
+async function validateNewPost(req,res,next){
+    const { title, content } = req.body;
     const id = Number(req.body.author_id);
 
     if(!title){
@@ -59,16 +63,19 @@ function validateNewPost(req,res,next){
         return res.status(400).json({
             error: "El id es incorrecto"
         });
-    } else if(!authors.some(author=> author.id === id)){
+    } 
+    
+    const validateAuthor = await getAuthorById(id);
+    if(validateAuthor.length === 0){
         return res.status(404).json({
             error: "El author no existe"
-        });
+        })
     };
 
     next();
 };
 
-function validateUpdatePost(req, res, next) {
+async function validateUpdatePost(req, res, next) {
     const id = Number(req.params.id);
     const { title, content, author_id, published } = req.body;
     const authorId = Number(author_id);
@@ -78,12 +85,16 @@ function validateUpdatePost(req, res, next) {
              error: "El id es incorrecto" 
             });
 
-    } else if (!posts.some(post => post.id === id)) {
+    } 
+    
+    const validatePost = await getPostById(id);
+    if(validatePost.length === 0){
         return res.status(404).json({
-             error: "El post no existe" 
-            });
-
-    } else if (!title || title.trim() === "") {
+            error: "El post no existe"
+        });
+    } 
+    
+    if (!title || title.trim() === "") {
         return res.status(400).json({
              error: "El titulo es obligatorio" 
             });
@@ -98,19 +109,23 @@ function validateUpdatePost(req, res, next) {
              error: "El author_id es incorrecto"
             });
 
-    } else if (!authors.some(author => author.id === authorId)) {
-        return res.status(404).json({ 
-            error: "El author no existe" 
-        });
+    }
+    
+    const validateAuthor = await getAuthorById(authorId);
+    if(validateAuthor.length === 0){
+        return res.status(404).json({
+            error: "El author no existe"
+        })
+    };
 
-    } else if (typeof published !== "boolean") {
+    if (typeof published !== "boolean") {
         return res.status(400).json({
              error: "published debe ser booleano" 
         });
     }
 
     next();
-}
+};
 
 module.exports = {
     validatePost,
