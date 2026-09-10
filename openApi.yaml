@@ -298,7 +298,6 @@ components:
         - title
         - content
         - author_id
-        - published
       properties:
         title:
           type: string
