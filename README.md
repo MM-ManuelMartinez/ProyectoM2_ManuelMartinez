@@ -158,7 +158,7 @@ El proyecto está preparado para ser desplegado en Railway.
 
 Las variables de entorno de PostgreSQL deben configurarse en el entorno de producción y las credenciales no deben almacenarse directamente en el repositorio.
 
-> La URL pública del deployment se agregará en esta sección una vez realizado el despliegue.
+https://proyectom2manuelmartinez-production.up.railway.app
 
 ## Estructura del proyecto
 
